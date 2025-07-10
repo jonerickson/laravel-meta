@@ -55,13 +55,19 @@ class MetaServiceProvider extends ServiceProvider
 
     /**
      * register package migrations
-     * 
+     *
      * @return void
      */
     private function registerPublishes()
     {
         $this->publishes([
-            __DIR__ . '/Config/meta.php' => config_path('meta.php'),
+            __DIR__ . '/Config/meta.php' => $this->app->configPath('meta.php'),
         ], 'config');
+
+        $method = method_exists($this, 'publishesMigrations') ? 'publishesMigrations' : 'publishes';
+
+        $this->{$method}([
+            __DIR__ . '/Database/Migrations' => $this->app->databasePath('migrations'),
+        ], 'migrations');
     }
 }
